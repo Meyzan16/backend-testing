@@ -1,0 +1,110 @@
+{
+  "info": {
+    "_postman_id": "f10de652-d68a-4c0c-81e5-3322b3b2b857",
+    "name": "Senior Java Developer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14209481"
+  },
+  "item": [
+    {
+      "name": "register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\" : \"meyzan1605@gmail.com\",\r\n    \"password\" : \"Qwerty123!\" ,\r\n    \"fullName\" : \"Meyzan Al Yutra\",\r\n    \"role\" : \"USER\"\r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "testing manual notif process for debug",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTM0MiIsImlhdCI6MTc3MTU3MTk4OCwiZXhwIjoxNzcxNjU4Mjg4fQ.oTF1B45KkLoEVrbiR9texTbSIqQTxZrVR5RglphHoxI",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"notificationUid\": \"eebedd03-ded5-411f-b50a-bfa7b21fc431\",\r\n  \"userUid\": \"31e804b5-70e4-4b54-8bd3-70bef7cf0799\",\r\n  \"channel\": \"EMAIL\",\r\n  \"recipient\": \"meyzan1605@gmail.com\",\r\n  \"subject\": \"Login Berhasil\",\r\n  \"body\": \"User berhasil login\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/notif/process",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9091",
+          "path": [
+            "api",
+            "notif",
+            "process"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\" : \"meyzan1605@gmail.com\",\r\n    \"password\" : \"Qwerty123!\" \r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
