@@ -1,10 +1,11 @@
 package com.example.notification_service.notif.DTO;
 
-import java.util.UUID;
+import com.example.notification_service.notif.Domain.ValueObject.Uid;
+
 
 public record NotificationEvent(
-        UUID notificationUid,
-        UUID userUid,
+        Uid notificationUid,
+        Uid userUid,
         String channel,
         String recipient,
         String subject,

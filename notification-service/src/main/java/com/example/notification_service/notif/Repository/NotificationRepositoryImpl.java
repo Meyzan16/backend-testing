@@ -1,5 +1,6 @@
 package com.example.notification_service.notif.Repository;
 
+import com.example.notification_service.notif.Domain.ValueObject.Uid;
 import com.example.notification_service.notif.Interface.Repository.NotificationRepository;
 import com.example.notification_service.shared.Exception.KafkaException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void updateStatusToSent(UUID notificationUid) {
+    public void updateStatusToSent(Uid notificationUid) {
 
         try {
 
@@ -29,7 +30,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
             jdbcTemplate.update(
                     sql,
-                    notificationUid,
+                    notificationUid.getValue().toString(),
                     "SENT",
                     null
             );
@@ -44,7 +45,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public void updateStatusToFailed(
-            UUID notificationUid,
+            Uid notificationUid,
             String errorMessage
     ) {
 
@@ -59,7 +60,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
             jdbcTemplate.update(
                     sql,
-                    notificationUid,
+                    notificationUid.getValue().toString(),
                     "FAILED",
                     errorMessage
             );

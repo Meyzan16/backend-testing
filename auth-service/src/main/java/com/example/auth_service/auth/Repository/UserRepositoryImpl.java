@@ -30,18 +30,22 @@ public class UserRepositoryImpl implements UserRepositoryInterface {
 
     @Override
     public Optional<User> findByEmail(Email email) {
-        String sql = """
-        EXEC sp_find_user_by_email
-            @p_email = ?
-        """;
+        try {
+            String sql = """
+            EXEC sp_find_user_by_email
+                @p_email = ?
+            """;
 
-        List<User> users = jdbcTemplate.query(
-                sql,
-                new Object[]{email.getValue()},
-                new UserFindByEmailRowMapper()
-        );
+            List<User> users = jdbcTemplate.query(
+                    sql,
+                    new Object[]{email.getValue()},
+                    new UserFindByEmailRowMapper()
+            );
 
-        return users.stream().findFirst();
+            return users.stream().findFirst();
+        } catch (DataAccessException ex) {
+            throw new AuthException.RegistrationException("database", ex.getMostSpecificCause().getMessage());
+        }
     }
 
 

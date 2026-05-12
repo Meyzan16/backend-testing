@@ -18,7 +18,6 @@ public class NotificationServiceImpl implements NotificationService {
             System.out.println("Processing notification: " + event.notificationUid());
             System.out.println("Send to: " + event.recipient());
 
-            // Simulasi kirim notification berhasil
             // Has -a artinya seervice memiliki  interface dalam proses pengirimkan noyifikasi Composition tapi jika di interface namanya Composition
 
             notificationRepository.updateStatusToSent(event.notificationUid());
