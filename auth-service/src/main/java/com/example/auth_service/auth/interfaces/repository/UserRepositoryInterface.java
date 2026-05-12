@@ -11,3 +11,4 @@ public interface UserRepositoryInterface {
 
     Optional<User> findByEmail(Email email);
 }
+
