@@ -1,0 +1,108 @@
+CREATE   PROCEDURE sp_find_user_by_email
+    @p_email VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        id            AS out_id,
+        user_uid      AS out_user_uid,
+        email         AS out_email,
+        password_hash AS out_password_hash,
+        full_name     AS out_full_name,
+        role          AS out_role,
+        is_active     AS out_is_active
+    FROM users
+    WHERE email = @p_email
+      AND is_active = 1;
+END;
+
+
+CREATE PROCEDURE sp_insert_notification
+    @p_notif_uid UNIQUEIDENTIFIER,
+    @p_user_uid UNIQUEIDENTIFIER,
+    @p_channel VARCHAR(50),
+    @p_recipient VARCHAR(255),
+    @p_subject VARCHAR(255),
+    @p_body NVARCHAR(MAX)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO notification_logs (
+        notification_uid,
+        user_uid,
+        channel,
+        recipient,
+        subject,
+        body,
+        status,
+        created_at
+    )
+    VALUES (
+        @p_notif_uid,
+        @p_user_uid,
+        @p_channel,
+        @p_recipient,
+        @p_subject,
+        @p_body,
+        'PENDING',
+        GETDATE()
+    );
+END
+
+CREATE   PROCEDURE sp_register_user
+    @p_user_uid      UNIQUEIDENTIFIER,
+    @p_email         NVARCHAR(255),
+    @p_password_hash NVARCHAR(255),
+    @p_full_name     NVARCHAR(150),
+    @p_role          NVARCHAR(50) = 'USER',
+    @p_is_active     BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM users WHERE email = @p_email)
+    BEGIN
+        THROW 50001, 'EMAIL_ALREADY_EXISTS', 1;
+    END;
+
+    IF LEN(@p_password_hash) < 10
+    BEGIN
+        THROW 50002, 'INVALID_PASSWORD_HASH', 1;
+    END;
+
+    INSERT INTO users (  user_uid,
+    email,
+    password_hash,
+    full_name,
+    role,
+    is_active)
+    OUTPUT
+        inserted.user_uid    AS out_user_uid,
+        inserted.email       AS out_email,
+        inserted.full_name   AS out_full_name,
+        inserted.role        AS out_role,
+        inserted.created_at  AS out_created_at
+     VALUES (@p_user_uid, @p_email, @p_password_hash, @p_full_name, @p_role, @p_is_active);
+END;
+
+CREATE PROCEDURE sp_update_notification_status
+    @p_notification_uid UNIQUEIDENTIFIER,
+    @p_status VARCHAR(20),
+    @p_error_message VARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE notification_logs
+    SET
+        status = @p_status,
+        error_message = @p_error_message,
+        sent_at = CASE
+                    WHEN @p_status = 'SENT'
+                    THEN GETDATE()
+                    ELSE sent_at
+                  END
+    WHERE notification_uid = @p_notification_uid;
+END;
