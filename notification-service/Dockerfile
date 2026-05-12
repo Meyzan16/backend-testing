@@ -1,4 +1,21 @@
-FROM ubuntu:latest
-LABEL authors="customer"
+FROM eclipse-temurin:25-jdk AS build
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y maven \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:25-jdk
+
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 9091
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
