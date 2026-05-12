@@ -14,9 +14,6 @@ import com.example.auth_service.shared.Exception.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
-
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthServiceInterface {
@@ -50,8 +47,8 @@ public class AuthServiceImpl implements AuthServiceInterface {
         String token = jwtTokenService.generateToken(user);
 
         NotificationEvent event = new NotificationEvent(
-                Uid.generate().getValue(),
-                user.getUid().getValue(),
+                Uid.generate(),
+                user.getUid(),
                 "EMAIL",
                 user.getEmail().getValue(),
                 "Login Berhasil",

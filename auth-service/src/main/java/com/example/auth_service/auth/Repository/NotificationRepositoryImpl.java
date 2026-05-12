@@ -10,8 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 
 @Repository
 @RequiredArgsConstructor
@@ -20,28 +18,29 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public UUID insertPendingNotification(NotificationEvent event) {
+    public Uid insertPendingNotification(NotificationEvent event) {
         try {
             String sql = """
-                EXEC sp_insert_notification
-                    @p_notif_uid = ?,
-                    @p_user_uid = ?,
-                    @p_channel = ?,
-                    @p_recipient = ?,
-                    @p_subject = ?,
-                    @p_body = ?
-                """;
+            EXEC sp_insert_notification
+                @p_notif_uid = ?,
+                @p_user_uid = ?,
+                @p_channel = ?,
+                @p_recipient = ?,
+                @p_subject = ?,
+                @p_body = ?
+            """;
 
-            return jdbcTemplate.queryForObject(
+            jdbcTemplate.update(
                     sql,
-                    (rs, rowNum) -> UUID.fromString(rs.getString("out_notification_uid")),
-                    event.notificationUid(),
-                    event.userUid(),
+                    event.notificationUid().getValue(),
+                    event.userUid().getValue(),
                     event.channel(),
                     event.recipient(),
                     event.subject(),
                     event.body()
             );
+
+            return event.notificationUid();
 
         } catch (DataAccessException ex) {
             throw new AuthException.RegistrationException(
