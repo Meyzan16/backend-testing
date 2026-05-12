@@ -1,17 +1,19 @@
-CREATE   PROCEDURE sp_find_user_by_email
+CREATE PROCEDURE sp_find_user_by_email
     @p_email VARCHAR(255)
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        id            AS out_id,
-        user_uid      AS out_user_uid,
-        email         AS out_email,
-        password_hash AS out_password_hash,
-        full_name     AS out_full_name,
-        role          AS out_role,
-        is_active     AS out_is_active
+        id,
+        user_uid,
+        email,
+        password_hash,
+        full_name,
+        role,
+        is_active,
+        created_at,
+        updated_at
     FROM users
     WHERE email = @p_email
       AND is_active = 1;
@@ -51,6 +53,7 @@ BEGIN
     );
 END
 
+
 CREATE   PROCEDURE sp_register_user
     @p_user_uid      UNIQUEIDENTIFIER,
     @p_email         NVARCHAR(255),
@@ -79,13 +82,19 @@ BEGIN
     role,
     is_active)
     OUTPUT
-        inserted.user_uid    AS out_user_uid,
-        inserted.email       AS out_email,
-        inserted.full_name   AS out_full_name,
-        inserted.role        AS out_role,
-        inserted.created_at  AS out_created_at
+        inserted.id,
+        inserted.user_uid,
+        inserted.email,
+        inserted.password_hash,
+        inserted.full_name,
+        inserted.role,
+        inserted.is_active,
+        inserted.created_at,
+        inserted.updated_at
      VALUES (@p_user_uid, @p_email, @p_password_hash, @p_full_name, @p_role, @p_is_active);
 END;
+
+
 
 CREATE PROCEDURE sp_update_notification_status
     @p_notification_uid UNIQUEIDENTIFIER,
